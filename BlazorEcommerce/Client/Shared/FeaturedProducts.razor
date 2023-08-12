@@ -1,0 +1,92 @@
+﻿@inject IProductService ProductService
+@implements IDisposable
+
+<div class="product-area section-space-top-100">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="all-items" role="tabpanel" aria-labelledby="all-items-tab">
+                        <div class="product-item-wrap row">
+                            @foreach (var product in ProductService.Products)
+                            {
+                                @if (product.Featured)
+                                {
+                                    <div class="col-xl-3 col-lg-4 col-sm-6 mb-4">
+                                        <!-- Added "mb-4" class here -->
+                                        <div class="product-item text-center">
+                                            <!-- Added "text-center" class here -->
+                                            <div class="product-img img-zoom-effect">
+                                                <a href="product/@product.Id">
+                                                    @if (!string.IsNullOrEmpty(product.ImageUrl))
+                                                    {
+                                                        <img class="img-full" src="@product.ImageUrl" alt="Product Images">
+                                                    }
+                                                    else if (product.Images.Count > 0)
+                                                    {
+                                                        <img class="img-full" src="@product.Images[0].Data" alt="Product Images" />
+                                                    }
+                                                </a>
+                                                <div class="product-add-action">
+                                                    <ul>
+                                                        <li>
+                                                            <a href="cart.html">
+                                                                <i class="pe-7s-cart"></i>
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="compare.html">
+                                                                <i class="pe-7s-shuffle"></i>
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="wishlist.html">
+                                                                <i class="pe-7s-like"></i>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <div class="product-content">
+                                                <a class="product-name" href="product/@product.Id">@product.Title</a>
+                                                <div class="price-box pb-1">
+                                                    @if (product.Variants != null && product.Variants.Count > 0)
+                                                    {
+                                                        <span class="new-price">$@product.Variants[0].Price</span>
+                                                    }
+                                                </div>
+                                                <div class="rating-box">
+                                                    <ul>
+                                                        <li><i class="pe-7s-star"></i></li>
+                                                        <li><i class="pe-7s-star"></i></li>
+                                                        <li><i class="pe-7s-star"></i></li>
+                                                        <li><i class="pe-7s-star"></i></li>
+                                                        <li><i class="pe-7s-star"></i></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@code {
+    protected override void OnInitialized()
+    {
+        ProductService.ProductsChanged += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        ProductService.ProductsChanged -= StateHasChanged;
+    }
+}

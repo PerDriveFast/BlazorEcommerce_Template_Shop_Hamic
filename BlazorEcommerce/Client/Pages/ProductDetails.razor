@@ -1,0 +1,219 @@
+﻿@page "/product/{id:int}"
+@inject IProductService ProductService
+@inject ICartService CartService
+
+@if (product == null)
+{
+    <span>@message</span>
+}
+else
+{
+    <div class="single-product-area section-space-top-100">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="single-product-img h-100">
+                        <div class="swiper-container single-product-slider">
+                            <div class="swiper-wrapper">
+                                <div class="swiper-slide">
+                                    <a href="assets/images/product/large-size/2-1-555x645.jpg" class="single-img gallery-popup">
+                                        @if (!string.IsNullOrEmpty(product.ImageUrl))
+                                        {
+                                            <img class="media-img" src="@product.ImageUrl" alt="@product.Title" />
+                                        }
+                                        else
+                                        {
+                                            <MudCarousel Class="mud-width-full" ItemsSource="@product.Images" Style="height: 200px;">
+                                                <ItemTemplate>
+                                                    <MudImage Src="@context.Data"></MudImage>>
+                                                </ItemTemplate>
+                                            </MudCarousel>
+                                        }
+                                    </a>
+                                </div>
+                               
+                            </div>
+                            <!-- Add Pagination -->
+                            <div class="swiper-pagination"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="product-thumb-with-content row">
+                        <div class="col-12 order-lg-1 order-2 pt-10 pt-lg-0">
+                            <div class="single-product-content">
+                                <h2 class="title">@product.Title</h2>
+                                <div class="price-box pb-1">
+                                  
+                                        @if (GetSelectedVariant() != null)
+                                        {
+                                            @if (GetSelectedVariant().OriginalPrice > GetSelectedVariant().Price)
+                                            {
+                                            <h6 class="new-price text-danger">
+                                                    $@GetSelectedVariant().OriginalPrice
+                                                </h6>
+                                            }
+                                        <h4 class="new-price text-danger">
+                                                $@GetSelectedVariant().Price
+                                            </h4>
+                                        }
+                                 
+                                    
+                                </div>
+                                <div class="rating-box-wrap pb-7">
+                                    <div class="rating-box">
+                                        <ul>
+                                            <li><i class="pe-7s-star"></i></li>
+                                            <li><i class="pe-7s-star"></i></li>
+                                            <li><i class="pe-7s-star"></i></li>
+                                            <li><i class="pe-7s-star"></i></li>
+                                            <li><i class="pe-7s-star"></i></li>
+                                        </ul>
+                                    </div>
+                                    <div class="review-status ps-4">
+                                        <a href="javascript:void(0)">
+                                            @if (product.Variants != null && product.Variants.Count > 1)
+                                            {
+                                                <div class="mb-3">
+                                                    <select class="form-select" @bind="currentTypeId">
+                                                        @foreach (var variant in product.Variants)
+                                                        {
+                                                            <option value="@variant.ProductTypeId">@variant.ProductType.Name</option>
+                                                        }
+                                                    </select>
+                                                </div>
+                                            }
+                                        </a>
+                                    </div>
+                                </div>
+                                <p class="short-desc mb-6">
+                                    @product.Description
+                                </p>
+                                <ul class="quantity-with-btn pb-7">
+                                    <li class="quantity">
+                                        <div class="cart-plus-minus">
+                                            <input class="cart-plus-minus-box" value="1" type="text">
+                                        </div>
+                                    </li>
+                                    <li class="add-to-cart">
+                                        <a class="btn btn-custom-size lg-size btn-primary btn-secondary-hover rounded-0" @onclick="AddToCart">Add to cart</a>
+                                    </li>
+                                    <li class="wishlist-btn-wrap">
+                                        <a class="btn rounded-0" href="wishlist.html">
+                                            <i class="pe-7s-like"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+                                <div class="product-category text-matterhorn pb-2">
+                                    <span class="title">Categories :</span>
+                                    <ul>
+                                        <li>
+                                            <a href="javascript:void(0)">Natural,</a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0)">Organic,</a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0)">Beautiful,</a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0)">Organic Food</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="product-category product-tags text-matterhorn pb-4">
+                                    <span class="title">Product Tags :</span>
+                                    <ul>
+                                        <li>
+                                            <a href="javascript:void(0)">Organic,</a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0)">Vegetable,</a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0)">Fruits</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="social-link align-items-center pb-lg-8">
+                                    <span class="title pe-3">Share:</span>
+                                    <ul>
+                                        <li>
+                                            <a href="javascript:void(0)">
+                                                <i class="fa fa-pinterest-p"></i>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0)">
+                                                <i class="fa fa-twitter"></i>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0)">
+                                                <i class="fa fa-tumblr"></i>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0)">
+                                                <i class="fa fa-dribbble"></i>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+ 
+
+}
+
+@code {
+    private Product? product = null;
+    private string message = string.Empty;
+    private int currentTypeId = 1;
+
+    [Parameter]
+    public int Id { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        message = "Loading product...";
+
+        var result = await ProductService.GetProduct(Id);
+        if (!result.Success)
+        {
+            message = result.Message;
+        }
+        else
+        {
+            product = result.Data;
+            if (product.Variants.Count > 0)
+            {
+                currentTypeId = product.Variants[0].ProductTypeId;
+            }
+        }
+    }
+
+    private ProductVariant GetSelectedVariant()
+    {
+        var variant = product.Variants.FirstOrDefault(v => v.ProductTypeId == currentTypeId);
+        return variant;
+    }
+
+    private async Task AddToCart()
+    {
+        var productVariant = GetSelectedVariant();
+        var cartItem = new CartItem
+            {
+                ProductId = productVariant.ProductId,
+                ProductTypeId = productVariant.ProductTypeId
+            };
+
+        await CartService.AddToCart(cartItem);
+    }
+}

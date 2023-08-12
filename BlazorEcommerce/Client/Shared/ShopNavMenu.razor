@@ -1,0 +1,56 @@
+﻿@inject ICategoryService CategoryService
+@implements IDisposable
+
+
+<div class="main-header header-sticky" data-bg-color="#bac34e">
+    <div class="container">
+        <div class="main-header_nav position-relative">
+            <div class="row align-items-center">
+                <div class="col-lg-12 d-none d-lg-block">
+                    <div class="main-menu">
+                        <nav class="main-nav">
+                            <ul>
+                                <li class="drop-holder">
+                                    <a href="javascript:void(0)" style="red">
+                                        @foreach (var category in CategoryService.Categories)
+                                        {
+                                            <div class="nav-item px-2">
+                                                <NavLink class="nav-link" href="@category.Url">
+                                                    @category.Name
+                                                </NavLink>
+                                            </div>
+                                        }
+                                    </a>
+
+                                </li>
+                             
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CategoryService.GetCategories();
+        CategoryService.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        CategoryService.OnChange -= StateHasChanged;
+    }
+}
